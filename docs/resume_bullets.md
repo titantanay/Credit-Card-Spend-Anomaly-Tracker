@@ -9,7 +9,7 @@ Copy and adapt. Keep wording factual — scale is ~50k synthetic transactions on
 - Implemented **deterministic anomaly detection** with documented thresholds, JSON evidence per alert, and severity scoring from breach magnitude and multi-signal coincidence.
 - Integrated **Ollama/Gemma narration** that explains alert evidence only, with a deterministic fallback when the model is unavailable so monitoring never depends on the LLM being up.
 - Shipped a Streamlit **risk-monitoring UI** (executive overview, KPI distributions, filterable alert feed, customer drilldown) reconciled to DuckDB totals; packaged with Docker Compose for local reproducibility.
-- Added automated coverage with **dbt data tests** and **pytest**, including dashboard data-access and overview reconciliation checks.
+- Added automated coverage with **dbt data tests**, **pytest**, and a seed-42 **acceptance verifier**, wired through GitHub Actions so PRs re-run the analytics pipeline end-to-end.
 
 ## Shorter LinkedIn / summary lines
 

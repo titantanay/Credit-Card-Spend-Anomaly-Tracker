@@ -48,6 +48,10 @@ KPI **definitions** stay in SQL (`mart_spend_kpis`) so metrics have one calculat
 
 Portfolio projects get oversold easily (“fraud platform”, “real-time AI”, “production bank”). This repo keeps a hard line: synthetic batch monitoring, rules decide, LLM narrates, Docker is local reproducibility. Positioning docs under `docs/portfolio.md` and `docs/limitations.md` exist so demos and resume bullets stay aligned with what the code actually does.
 
+## 12. Why CI runs the full seeded pipeline?
+
+Unit tests alone can pass against a stale warehouse. CI regenerates the seed-42 portfolio, rebuilds marts, re-detects alerts, then runs pytest, dbt tests, and `make verify` so headline metrics stay honest. Ollama is intentionally absent in CI — fallback narration must work.
+
 ---
 
 *Additional decisions will be appended if the system scope expands.*

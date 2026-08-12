@@ -54,4 +54,5 @@ Category-shift flags are frequent (~31% of customers) on this synthetic seed —
 - [Demo script](demo_script.md)
 - [Resume / LinkedIn bullets](resume_bullets.md)
 - [Limitations](limitations.md)
+- [CI](ci.md)
 - [Architecture decisions](../DECISIONS.md)

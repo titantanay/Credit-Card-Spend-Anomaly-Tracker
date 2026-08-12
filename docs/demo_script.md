@@ -63,10 +63,11 @@ Open http://localhost:8501.
 
 ```bash
 pytest
+make verify
 docker compose ps   # if using containers
 ```
 
-“Everything runs on a laptop without cloud APIs. Docker mounts the warehouse; Ollama stays on the host.”
+“Everything runs on a laptop without cloud APIs. Docker mounts the warehouse; Ollama stays on the host. CI re-runs the seeded pipeline on every PR.”
 
 ## Numbers to keep handy (seed 42 portfolio)
 

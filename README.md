@@ -168,6 +168,8 @@ make kpi-summary       # KPI mart coverage vs monitoring thresholds
 make detect-anomalies  # rule-based alerts → data/processed/anomalies.csv
 make narrate-anomalies # Ollama narration (fallback if offline)
 make dashboard         # Streamlit UI on http://localhost:8501
+make pipeline          # generate → ingest → dbt → detect → narrate
+make verify            # reconcile seed-42 acceptance metrics
 ```
 
 Equivalent without Make (from repo root):
@@ -191,9 +193,12 @@ Set `DUCKDB_PATH` to the absolute warehouse path if you are not using Make (Make
 pytest
 make dbt-clean   # run from repo root; do not use dbt clean --project-dir from root
 make dbt-test
+make verify      # seed-42 headline metric reconciliation (requires pipeline artifacts)
 ```
 
 Dashboard logic tests live in `tests/test_dashboard.py` (data loading, filtering, overview reconciliation against DuckDB).
+
+CI (GitHub Actions) runs the seeded pipeline, pytest, dbt tests, and `make verify` on pushes/PRs. Details: [docs/ci.md](docs/ci.md).
 
 ## Project Structure
 
@@ -208,7 +213,9 @@ dashboard/        Streamlit risk monitoring UI
 data/             Raw and processed files (not committed)
 database/         Local DuckDB file (not committed)
 tests/            Unit and integration tests
+scripts/          Acceptance verification helpers
 docs/             Supplemental documentation
+.github/workflows CI pipeline
 config.py         Shared paths and infrastructure settings
 Dockerfile        Dashboard image
 docker-compose.yml  Local dashboard service + volume mounts
@@ -223,10 +230,14 @@ Stage 10 positioning materials (honest framing for interviews and resumes):
 - [Demo script](docs/demo_script.md)
 - [Known limitations](docs/limitations.md)
 
+## Continuous Integration
+
+Stage 11 adds GitHub Actions CI and `make verify`. See [docs/ci.md](docs/ci.md).
+
 ## Design Decisions
 
 See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/kpi_definitions.md). Thresholds: [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md). Severity: [docs/severity.md](docs/severity.md). Narration: [docs/ai_narration.md](docs/ai_narration.md).
 
 ## Status
 
-Stages 1–10 complete for this prototype: analytics pipeline, anomaly detection with severity, optional Ollama narration, Streamlit dashboard, local Docker packaging, and portfolio/demo documentation. Ollama remains optional.
+Stages 1–11 complete for this prototype: analytics pipeline, anomaly detection with severity, optional Ollama narration, Streamlit dashboard, local Docker packaging, portfolio/demo documentation, and CI verification. Ollama remains optional.
