@@ -61,7 +61,11 @@ Monitoring thresholds (business rules, not ML scores): [docs/anomaly_thresholds.
 
 ## Anomaly Detection
 
-Rule-based detection over mart/KPI outputs (Phase 7+). Thresholds live in the KPI layer. The detector never relies on the LLM to decide whether behavior is anomalous.
+Rule-based detection in `anomaly/detector.py` over `mart_spend_kpis` /
+`mart_customer_spend`. Alert types: spend velocity, category shift, decline
+rate, large transaction. Each alert stores `metric_value`, `threshold_value`,
+and JSON `explanation_context` so evidence is preserved for review and later
+narration. Thresholds: [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md).
 
 ## AI Narration
 
@@ -96,7 +100,8 @@ make ingest          # load CSVs → DuckDB raw_transactions / raw_customers
 make dbt-run         # build staging + marts
 make dbt-test        # dbt data tests
 make kpi-summary     # KPI mart coverage vs monitoring thresholds
-# make detect-anomalies / dashboard  (later phases)
+make detect-anomalies  # rule-based alerts → data/processed/anomalies.csv
+# make dashboard  (later phases)
 ```
 
 Equivalent without Make (from repo root):
@@ -107,6 +112,7 @@ python -m ingestion.load_to_duckdb
 dbt run --project-dir dbt --profiles-dir dbt
 dbt test --project-dir dbt --profiles-dir dbt
 python -m kpi.summarize
+python -m anomaly.detector
 ```
 
 Set `DUCKDB_PATH` to the absolute warehouse path if you are not using Make (Make exports it automatically).
@@ -126,7 +132,7 @@ data_generator/   Synthetic transaction generation
 ingestion/        CSV → DuckDB raw load
 dbt/              Staging and mart models
 kpi/              Mart access + monitoring thresholds
-anomaly/          Rule-based detection and severity (later)
+anomaly/          Rule-based detection (severity scoring next)
 ai_narration/     Ollama prompt + narration client (later)
 dashboard/        Streamlit risk monitoring UI (later)
 data/             Raw and processed files (not committed)
@@ -142,4 +148,4 @@ See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/k
 
 ## Status
 
-Phase 6 — KPI layer (mart access + monitoring thresholds). Anomaly detection, narration, and dashboard land next.
+Phase 7 — rule-based anomaly detection. Severity framework, narration, and dashboard land next.

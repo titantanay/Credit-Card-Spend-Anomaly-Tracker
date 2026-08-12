@@ -1,7 +1,7 @@
 """Configurable monitoring thresholds for spend KPIs.
 
-These are business rules, not model scores. Phase 7 anomaly detection will
-consume this module; values are intentionally easy to change in one place.
+These are business rules, not model scores. Anomaly detection consumes this
+module; values are intentionally easy to change in one place.
 """
 
 from __future__ import annotations

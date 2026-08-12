@@ -2,7 +2,7 @@
 
 Business rules used to interpret KPI mart outputs. Stored in
 `kpi/thresholds.py` as `MonitoringThresholds`. The analytics layer decides
-what is elevated; later anomaly detection will emit alerts from these rules.
+what is elevated; `anomaly/detector.py` emits alerts from these rules.
 The LLM never sets or overrides these values.
 
 ---
