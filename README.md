@@ -71,7 +71,10 @@ magnitude with multi-signal coincidence — see
 
 ## AI Narration
 
-Ollama + a Gemma-family model produce short, analyst-facing explanations from structured anomaly evidence only. If Ollama is unavailable, the dashboard still runs.
+Ollama + a configurable Gemma-family model narrate alerts from structured
+evidence only (`ai_narration/`). If Ollama is unavailable, a deterministic
+fallback narration is used so monitoring UIs still work. Details:
+[docs/ai_narration.md](docs/ai_narration.md).
 
 ## Dashboard
 
@@ -103,6 +106,7 @@ make dbt-run         # build staging + marts
 make dbt-test        # dbt data tests
 make kpi-summary     # KPI mart coverage vs monitoring thresholds
 make detect-anomalies  # rule-based alerts → data/processed/anomalies.csv
+make narrate-anomalies # Ollama narration (fallback if offline)
 # make dashboard  (later phases)
 ```
 
@@ -115,6 +119,7 @@ dbt run --project-dir dbt --profiles-dir dbt
 dbt test --project-dir dbt --profiles-dir dbt
 python -m kpi.summarize
 python -m anomaly.detector
+python -m ai_narration.narrator
 ```
 
 Set `DUCKDB_PATH` to the absolute warehouse path if you are not using Make (Make exports it automatically).
@@ -135,7 +140,7 @@ ingestion/        CSV → DuckDB raw load
 dbt/              Staging and mart models
 kpi/              Mart access + monitoring thresholds
 anomaly/          Rule-based detection and severity scoring
-ai_narration/     Ollama prompt + narration client (later)
+ai_narration/     Ollama prompt + narration (fallback if offline)
 dashboard/        Streamlit risk monitoring UI (later)
 data/             Raw and processed files (not committed)
 database/         Local DuckDB file (not committed)
@@ -150,4 +155,4 @@ See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/k
 
 ## Status
 
-Phase 8 — severity scoring. LLM narration and dashboard land next.
+Phase 9 — local LLM narration. Streamlit dashboard lands next.

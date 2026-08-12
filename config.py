@@ -15,6 +15,7 @@ DATABASE_DIR = PROJECT_ROOT / "database"
 RAW_TRANSACTIONS_CSV = RAW_DATA_DIR / "transactions.csv"
 CUSTOMERS_CSV = RAW_DATA_DIR / "customers.csv"
 ANOMALIES_CSV = PROCESSED_DATA_DIR / "anomalies.csv"
+ANOMALIES_NARRATED_CSV = PROCESSED_DATA_DIR / "anomalies_narrated.csv"
 DBT_PROJECT_DIR = PROJECT_ROOT / "dbt"
 
 DUCKDB_PATH = Path(

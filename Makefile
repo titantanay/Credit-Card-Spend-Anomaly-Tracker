@@ -1,7 +1,7 @@
 # Developer shortcuts. Requires GNU Make (Git Bash / WSL on Windows).
 # Run targets from the repository root.
 
-.PHONY: help install generate-data ingest dbt-clean dbt-debug dbt-run dbt-test kpi-summary detect-anomalies
+.PHONY: help install generate-data ingest dbt-clean dbt-debug dbt-run dbt-test kpi-summary detect-anomalies narrate-anomalies
 
 DBT := .venv/bin/dbt
 export DUCKDB_PATH ?= $(CURDIR)/database/spend_monitor.duckdb
@@ -19,6 +19,7 @@ help:
 	@echo "  make dbt-test         Run dbt data tests"
 	@echo "  make kpi-summary      Summarize KPI marts vs monitoring thresholds"
 	@echo "  make detect-anomalies Run rule-based anomaly detection"
+	@echo "  make narrate-anomalies  Narrate alerts via Ollama (fallback if offline)"
 	@echo ""
 	@echo "Planned (added in later phases):"
 	@echo "  make dashboard"
@@ -52,3 +53,6 @@ kpi-summary:
 
 detect-anomalies:
 	.venv/bin/python -m anomaly.detector
+
+narrate-anomalies:
+	.venv/bin/python -m ai_narration.narrator
