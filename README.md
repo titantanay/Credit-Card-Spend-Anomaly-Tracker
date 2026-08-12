@@ -87,7 +87,18 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Pipeline commands will be available via `Makefile` targets as each phase lands (`generate-data`, `ingest`, `dbt-run`, `detect-anomalies`, `dashboard`).
+Pipeline commands:
+
+```bash
+make generate-data   # synthetic customers + transactions → data/raw/
+# make ingest / dbt-run / detect-anomalies / dashboard  (later phases)
+```
+
+Equivalent without Make:
+
+```bash
+python -m data_generator.generate_transactions
+```
 
 ## Testing
 
@@ -118,4 +129,4 @@ See [DECISIONS.md](DECISIONS.md).
 
 ## Status
 
-Phase 1 — repository scaffold and configuration. Application modules land in subsequent phases.
+Phase 2 — synthetic data generation. Ingestion, dbt, anomaly detection, and dashboard land in subsequent phases.

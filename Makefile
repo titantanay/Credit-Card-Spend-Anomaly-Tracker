@@ -1,16 +1,16 @@
 # Developer shortcuts. Requires GNU Make (Git Bash / WSL on Windows).
 # Equivalent shell commands are documented in the README as phases land.
 
-.PHONY: help install
+.PHONY: help install generate-data
 
 help:
 	@echo "Credit Card Spend Anomaly Tracker"
 	@echo ""
 	@echo "Available:"
 	@echo "  make install          Create venv (if needed) and install requirements"
+	@echo "  make generate-data    Write synthetic customers/transactions CSVs"
 	@echo ""
 	@echo "Planned (added in later phases):"
-	@echo "  make generate-data"
 	@echo "  make ingest"
 	@echo "  make dbt-run"
 	@echo "  make dbt-test"
@@ -21,3 +21,6 @@ install:
 	python3 -m venv .venv
 	.venv/bin/pip install --upgrade pip
 	.venv/bin/pip install -r requirements.txt
+
+generate-data:
+	.venv/bin/python -m data_generator.generate_transactions
