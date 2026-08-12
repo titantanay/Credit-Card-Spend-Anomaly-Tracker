@@ -44,11 +44,9 @@ Details and trade-offs: see [DECISIONS.md](DECISIONS.md).
 
 | Layer | Role |
 |-------|------|
-| Raw | `raw_transactions` loaded from CSV |
-| Staging | Typed, normalized `stg_transactions` |
-| Marts | Customer spend, KPI, and decline-rate models |
-
-*(Filled in as models are added.)*
+| Raw | `raw_transactions`, `raw_customers` loaded from CSV |
+| Staging | Typed, normalized `stg_transactions` *(Phase 4)* |
+| Marts | Customer spend, KPI, and decline-rate models *(Phase 5+)* |
 
 ## KPI Definitions
 
@@ -91,13 +89,15 @@ Pipeline commands:
 
 ```bash
 make generate-data   # synthetic customers + transactions → data/raw/
-# make ingest / dbt-run / detect-anomalies / dashboard  (later phases)
+make ingest          # load CSVs → DuckDB raw_transactions / raw_customers
+# make dbt-run / detect-anomalies / dashboard  (later phases)
 ```
 
 Equivalent without Make:
 
 ```bash
 python -m data_generator.generate_transactions
+python -m ingestion.load_to_duckdb
 ```
 
 ## Testing
@@ -129,4 +129,4 @@ See [DECISIONS.md](DECISIONS.md).
 
 ## Status
 
-Phase 2 — synthetic data generation. Ingestion, dbt, anomaly detection, and dashboard land in subsequent phases.
+Phase 3 — DuckDB raw ingestion. dbt models, anomaly detection, and dashboard land in subsequent phases.
