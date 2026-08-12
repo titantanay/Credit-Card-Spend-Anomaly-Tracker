@@ -1,0 +1,23 @@
+# Developer shortcuts. Requires GNU Make (Git Bash / WSL on Windows).
+# Equivalent shell commands are documented in the README as phases land.
+
+.PHONY: help install
+
+help:
+	@echo "Credit Card Spend Anomaly Tracker"
+	@echo ""
+	@echo "Available:"
+	@echo "  make install          Create venv (if needed) and install requirements"
+	@echo ""
+	@echo "Planned (added in later phases):"
+	@echo "  make generate-data"
+	@echo "  make ingest"
+	@echo "  make dbt-run"
+	@echo "  make dbt-test"
+	@echo "  make detect-anomalies"
+	@echo "  make dashboard"
+
+install:
+	python3 -m venv .venv
+	.venv/bin/pip install --upgrade pip
+	.venv/bin/pip install -r requirements.txt
