@@ -40,6 +40,10 @@ The goal is a maintainable analytics pipeline (SQL, KPIs, rules, documentation),
 
 Swap the DuckDB profile for BigQuery, Snowflake, or Redshift in dbt; keep staging/mart contracts and Python detection against warehouse tables or exported extracts. Generator and dashboard remain local or move behind the same SQL interfaces.
 
+## 10. Why a Python KPI layer on top of dbt marts?
+
+KPI **definitions** stay in SQL (`mart_spend_kpis`) so metrics have one calculation path. The Python `kpi/` package only reads those marts and holds monitoring thresholds. That keeps the dashboard and future detector from re-implementing spend math against raw CSV, and puts business-rule thresholds in one editable module.
+
 ---
 
-*Additional decisions will be appended as pipeline, KPI, and packaging choices are finalized.*
+*Additional decisions will be appended as packaging and detection choices are finalized.*

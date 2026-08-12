@@ -12,6 +12,7 @@ def test_expected_package_dirs_exist():
     for name in (
         "data_generator",
         "ingestion",
+        "kpi",
         "anomaly",
         "ai_narration",
         "dashboard",

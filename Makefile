@@ -1,7 +1,7 @@
 # Developer shortcuts. Requires GNU Make (Git Bash / WSL on Windows).
 # Run targets from the repository root.
 
-.PHONY: help install generate-data ingest dbt-clean dbt-debug dbt-run dbt-test
+.PHONY: help install generate-data ingest dbt-clean dbt-debug dbt-run dbt-test kpi-summary
 
 DBT := .venv/bin/dbt
 export DUCKDB_PATH ?= $(CURDIR)/database/spend_monitor.duckdb
@@ -17,6 +17,7 @@ help:
 	@echo "  make dbt-debug        Check dbt ↔ DuckDB connectivity"
 	@echo "  make dbt-run          Build dbt models"
 	@echo "  make dbt-test         Run dbt data tests"
+	@echo "  make kpi-summary      Summarize KPI marts vs monitoring thresholds"
 	@echo ""
 	@echo "Planned (added in later phases):"
 	@echo "  make detect-anomalies"
@@ -45,3 +46,6 @@ dbt-run:
 
 dbt-test:
 	$(DBT) test --project-dir dbt --profiles-dir dbt
+
+kpi-summary:
+	.venv/bin/python -m kpi.summarize

@@ -47,6 +47,7 @@ Details and trade-offs: see [DECISIONS.md](DECISIONS.md).
 | Raw | `raw_transactions`, `raw_customers` loaded from CSV |
 | Staging | Typed, normalized `stg_transactions` |
 | Marts | `mart_customer_spend`, `mart_spend_kpis`, `mart_decline_rates` |
+| KPI layer | Python access to marts + monitoring thresholds (`kpi/`) |
 
 ## KPI Definitions
 
@@ -54,11 +55,13 @@ See [docs/kpi_definitions.md](docs/kpi_definitions.md) for full formulas. Summar
 
 1. **Spend velocity** — `spend_7d / (spend_30d × 7/30)`
 2. **Category shift** — max absolute category-share change (recent 7d vs prior 30d baseline)
-3. **Decline rate** — declined / total transactions (7d, 30d, and weekly dimensional views)
+3. **Decline rate** — Declined / total transactions (7d, 30d, and weekly dimensional views)
+
+Monitoring thresholds (business rules, not ML scores): [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md). Implemented in `kpi/thresholds.py`. Inspect coverage with `make kpi-summary`.
 
 ## Anomaly Detection
 
-Rule-based detection over mart/KPI outputs. Thresholds are configurable business rules. The detector never relies on the LLM to decide whether behavior is anomalous.
+Rule-based detection over mart/KPI outputs (Phase 7+). Thresholds live in the KPI layer. The detector never relies on the LLM to decide whether behavior is anomalous.
 
 ## AI Narration
 
@@ -90,8 +93,9 @@ Pipeline commands:
 ```bash
 make generate-data   # synthetic customers + transactions → data/raw/
 make ingest          # load CSVs → DuckDB raw_transactions / raw_customers
-make dbt-run         # build staging (and later marts)
+make dbt-run         # build staging + marts
 make dbt-test        # dbt data tests
+make kpi-summary     # KPI mart coverage vs monitoring thresholds
 # make detect-anomalies / dashboard  (later phases)
 ```
 
@@ -102,6 +106,7 @@ python -m data_generator.generate_transactions
 python -m ingestion.load_to_duckdb
 dbt run --project-dir dbt --profiles-dir dbt
 dbt test --project-dir dbt --profiles-dir dbt
+python -m kpi.summarize
 ```
 
 Set `DUCKDB_PATH` to the absolute warehouse path if you are not using Make (Make exports it automatically).
@@ -120,9 +125,10 @@ make dbt-test
 data_generator/   Synthetic transaction generation
 ingestion/        CSV → DuckDB raw load
 dbt/              Staging and mart models
-anomaly/          Rule-based detection and severity
-ai_narration/     Ollama prompt + narration client
-dashboard/        Streamlit risk monitoring UI
+kpi/              Mart access + monitoring thresholds
+anomaly/          Rule-based detection and severity (later)
+ai_narration/     Ollama prompt + narration client (later)
+dashboard/        Streamlit risk monitoring UI (later)
 data/             Raw and processed files (not committed)
 database/         Local DuckDB file (not committed)
 tests/            Unit and integration tests
@@ -132,8 +138,8 @@ config.py         Shared paths and infrastructure settings
 
 ## Design Decisions
 
-See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/kpi_definitions.md).
+See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/kpi_definitions.md). Thresholds: [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md).
 
 ## Status
 
-Phase 5 — dbt marts and KPI definitions. Anomaly detection and dashboard land in subsequent phases.
+Phase 6 — KPI layer (mart access + monitoring thresholds). Anomaly detection, narration, and dashboard land next.
