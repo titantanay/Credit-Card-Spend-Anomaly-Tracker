@@ -46,15 +46,15 @@ Details and trade-offs: see [DECISIONS.md](DECISIONS.md).
 |-------|------|
 | Raw | `raw_transactions`, `raw_customers` loaded from CSV |
 | Staging | Typed, normalized `stg_transactions` |
-| Marts | Customer spend, KPI, and decline-rate models *(Phase 5+)* |
+| Marts | `mart_customer_spend`, `mart_spend_kpis`, `mart_decline_rates` |
 
 ## KPI Definitions
 
-Primary monitoring metrics (definitions finalized with the KPI layer):
+See [docs/kpi_definitions.md](docs/kpi_definitions.md) for full formulas. Summary:
 
-1. **Spend velocity** — recent spend vs customer baseline
-2. **Category shift** — change in merchant-category mix
-3. **Decline rate** — declined / total transactions
+1. **Spend velocity** — `spend_7d / (spend_30d × 7/30)`
+2. **Category shift** — max absolute category-share change (recent 7d vs prior 30d baseline)
+3. **Decline rate** — declined / total transactions (7d, 30d, and weekly dimensional views)
 
 ## Anomaly Detection
 
@@ -131,8 +131,8 @@ config.py         Shared paths and infrastructure settings
 
 ## Design Decisions
 
-See [DECISIONS.md](DECISIONS.md).
+See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/kpi_definitions.md).
 
 ## Status
 
-Phase 4 — dbt project and staging models. Marts, anomaly detection, and dashboard land in subsequent phases.
+Phase 5 — dbt marts and KPI definitions. Anomaly detection and dashboard land in subsequent phases.
