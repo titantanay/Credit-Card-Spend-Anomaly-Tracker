@@ -29,7 +29,7 @@ MERCHANT_CATEGORIES = (
     "Fashion",
 )
 
-TRANSACTION_STATUSES = ("approved", "declined")
+TRANSACTION_STATUSES = ("Approved", "Declined")
 
 # Typical ticket sizes by category (mean, std) in USD — used as base draws
 CATEGORY_AMOUNT_PARAMS: dict[str, tuple[float, float]] = {

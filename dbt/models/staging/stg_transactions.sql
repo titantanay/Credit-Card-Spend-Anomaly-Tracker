@@ -16,7 +16,10 @@ cleaned as (
             as transaction_month,
         trim(cast(merchant_category as varchar)) as merchant_category,
         cast(transaction_amount as double) as transaction_amount,
-        lower(trim(cast(transaction_status as varchar))) as transaction_status,
+        case lower(trim(cast(transaction_status as varchar)))
+            when 'approved' then 'Approved'
+            when 'declined' then 'Declined'
+        end as transaction_status,
         trim(cast(card_type as varchar)) as card_type
     from source
 )

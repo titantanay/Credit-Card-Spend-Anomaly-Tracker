@@ -1,8 +1,18 @@
 # KPI Definitions
 
 Primary monitoring metrics are built in `marts.mart_spend_kpis` from
-`staging.stg_transactions`. Spend amounts use **approved** transactions only
+`staging.stg_transactions`. Spend amounts use **Approved** transactions only
 unless noted. Decline rates use all transaction attempts.
+
+## Status values
+
+`transaction_status` is Title Case after staging, matching other categoricals:
+
+- `Approved`
+- `Declined`
+
+Staging normalizes any casing from raw (`approved` / `APPROVED` → `Approved`).
+Always filter with `'Approved'` / `'Declined'` — lowercase literals will miss rows.
 
 Observation windows are anchored to `as_of_date` = max(`transaction_date`)
 in staging.
@@ -19,7 +29,7 @@ spend_velocity = spend_7d / (spend_30d × 7/30)
 
 | Input | Window |
 |-------|--------|
-| `spend_7d` | Approved spend on `[as_of_date - 6 days, as_of_date]` |
+| `spend_7d` | Approved spend on `[as_of_date - 6 days, as_of_date]` (`transaction_status = 'Approved'`) |
 | `spend_30d` | Approved spend on `[as_of_date - 29 days, as_of_date]` |
 
 **Interpretation**
@@ -68,7 +78,7 @@ baseline mix.
 **Definition**
 
 ```text
-decline_rate = declined_transactions / total_transactions
+decline_rate = Declined transactions / total transactions
 ```
 
 Reported in `mart_spend_kpis` for 7-day and 30-day lookbacks, and in

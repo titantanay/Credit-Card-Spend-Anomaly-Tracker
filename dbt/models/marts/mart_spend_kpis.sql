@@ -43,14 +43,14 @@ spend_windows as (
         t.customer_id,
         coalesce(
             sum(t.transaction_amount) filter (
-                where t.transaction_status = 'approved'
+                where t.transaction_status = 'Approved'
                   and t.transaction_date between w.recent_start and w.as_of_date
             ),
             0.0
         ) as spend_7d,
         coalesce(
             sum(t.transaction_amount) filter (
-                where t.transaction_status = 'approved'
+                where t.transaction_status = 'Approved'
                   and t.transaction_date between w.lookback_30_start and w.as_of_date
             ),
             0.0
@@ -62,11 +62,11 @@ spend_windows as (
             where t.transaction_date between w.lookback_30_start and w.as_of_date
         ) as txn_count_30d,
         count(*) filter (
-            where t.transaction_status = 'declined'
+            where t.transaction_status = 'Declined'
               and t.transaction_date between w.recent_start and w.as_of_date
         ) as declined_count_7d,
         count(*) filter (
-            where t.transaction_status = 'declined'
+            where t.transaction_status = 'Declined'
               and t.transaction_date between w.lookback_30_start and w.as_of_date
         ) as declined_count_30d
     from transactions as t
@@ -79,7 +79,7 @@ recent_category as (
         t.customer_id,
         t.merchant_category,
         coalesce(
-            sum(t.transaction_amount) filter (where t.transaction_status = 'approved'),
+            sum(t.transaction_amount) filter (where t.transaction_status = 'Approved'),
             0.0
         ) as spend
     from transactions as t
@@ -93,7 +93,7 @@ baseline_category as (
         t.customer_id,
         t.merchant_category,
         coalesce(
-            sum(t.transaction_amount) filter (where t.transaction_status = 'approved'),
+            sum(t.transaction_amount) filter (where t.transaction_status = 'Approved'),
             0.0
         ) as spend
     from transactions as t

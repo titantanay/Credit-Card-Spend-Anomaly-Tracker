@@ -110,6 +110,7 @@ Set `DUCKDB_PATH` to the absolute warehouse path if you are not using Make (Make
 
 ```bash
 pytest
+make dbt-clean   # run from repo root; do not use dbt clean --project-dir from root
 make dbt-test
 ```
 

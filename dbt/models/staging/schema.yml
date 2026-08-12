@@ -49,11 +49,11 @@ models:
         tests:
           - not_null
       - name: transaction_status
-        description: approved or declined
+        description: Canonical values Approved or Declined (Title Case)
         tests:
           - not_null
           - accepted_values:
-              values: ["approved", "declined"]
+              values: ["Approved", "Declined"]
       - name: card_type
         description: Product tier on the card used
         tests:

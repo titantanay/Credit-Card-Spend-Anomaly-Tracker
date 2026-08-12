@@ -16,24 +16,24 @@ customer_totals as (
     select
         t.customer_id,
         count(*) as transaction_count,
-        count(*) filter (where t.transaction_status = 'approved') as approved_count,
-        count(*) filter (where t.transaction_status = 'declined') as declined_count,
+        count(*) filter (where t.transaction_status = 'Approved') as approved_count,
+        count(*) filter (where t.transaction_status = 'Declined') as declined_count,
         coalesce(
-            sum(t.transaction_amount) filter (where t.transaction_status = 'approved'),
+            sum(t.transaction_amount) filter (where t.transaction_status = 'Approved'),
             0.0
         ) as total_approved_spend,
         coalesce(
-            avg(t.transaction_amount) filter (where t.transaction_status = 'approved'),
+            avg(t.transaction_amount) filter (where t.transaction_status = 'Approved'),
             0.0
         ) as avg_approved_amount,
         coalesce(
-            max(t.transaction_amount) filter (where t.transaction_status = 'approved'),
+            max(t.transaction_amount) filter (where t.transaction_status = 'Approved'),
             0.0
         ) as max_approved_amount,
         count(distinct t.transaction_date) as active_days,
         min(t.transaction_date) as first_transaction_date,
         max(t.transaction_date) as last_transaction_date,
-        count(*) filter (where t.transaction_status = 'declined')::double
+        count(*) filter (where t.transaction_status = 'Declined')::double
             / nullif(count(*), 0) as decline_rate
     from transactions as t
     group by 1
@@ -44,7 +44,7 @@ category_spend as (
         customer_id,
         merchant_category,
         coalesce(
-            sum(transaction_amount) filter (where transaction_status = 'approved'),
+            sum(transaction_amount) filter (where transaction_status = 'Approved'),
             0.0
         ) as category_spend
     from transactions

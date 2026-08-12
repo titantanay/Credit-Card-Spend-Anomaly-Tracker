@@ -52,7 +52,7 @@ def _sample_transactions() -> pd.DataFrame:
                 "transaction_timestamp": "2025-11-01 10:00:00",
                 "merchant_category": "Dining",
                 "transaction_amount": 42.5,
-                "transaction_status": "approved",
+                "transaction_status": "Approved",
                 "card_type": "Gold",
             },
             {
@@ -61,7 +61,7 @@ def _sample_transactions() -> pd.DataFrame:
                 "transaction_timestamp": "2025-11-02 14:30:00",
                 "merchant_category": "Travel",
                 "transaction_amount": 500.0,
-                "transaction_status": "declined",
+                "transaction_status": "Declined",
                 "card_type": "Classic",
             },
             {
@@ -70,7 +70,7 @@ def _sample_transactions() -> pd.DataFrame:
                 "transaction_timestamp": "2025-11-03 09:15:00",
                 "merchant_category": "Groceries",
                 "transaction_amount": 88.2,
-                "transaction_status": "approved",
+                "transaction_status": "Approved",
                 "card_type": "Gold",
             },
         ],

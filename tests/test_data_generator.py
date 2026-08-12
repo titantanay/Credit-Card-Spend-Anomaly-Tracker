@@ -86,7 +86,7 @@ def test_behavioral_profiles_create_variation(small_scale):
     customers = generate_customers(rng)
     transactions = generate_transactions(customers, rng)
 
-    overall_decline = (transactions["transaction_status"] == "declined").mean()
+    overall_decline = (transactions["transaction_status"] == "Declined").mean()
     assert 0.01 < overall_decline < 0.25
 
     travel_share = (transactions["merchant_category"] == "Travel").mean()

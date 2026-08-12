@@ -182,7 +182,11 @@ def generate_transactions(
             category = str(rng.choice(categories, p=weights))
             amount = _draw_amount(category, cust_profiles, spend_scale, rng)
             decline_p = _decline_probability(cust_profiles, amount, credit_limit)
-            status = "declined" if rng.random() < decline_p else "approved"
+            status = (
+                gen_config.TRANSACTION_STATUSES[1]
+                if rng.random() < decline_p
+                else gen_config.TRANSACTION_STATUSES[0]
+            )
 
             hour = int(rng.integers(6, 23))
             minute = int(rng.integers(0, 60))
