@@ -1,7 +1,10 @@
 # Developer shortcuts. Requires GNU Make (Git Bash / WSL on Windows).
-# Equivalent shell commands are documented in the README as phases land.
+# Run targets from the repository root.
 
-.PHONY: help install generate-data ingest
+.PHONY: help install generate-data ingest dbt-debug dbt-run dbt-test
+
+DBT := .venv/bin/dbt
+export DUCKDB_PATH ?= $(CURDIR)/database/spend_monitor.duckdb
 
 help:
 	@echo "Credit Card Spend Anomaly Tracker"
@@ -10,10 +13,11 @@ help:
 	@echo "  make install          Create venv (if needed) and install requirements"
 	@echo "  make generate-data    Write synthetic customers/transactions CSVs"
 	@echo "  make ingest           Load raw CSVs into DuckDB"
+	@echo "  make dbt-debug        Check dbt ↔ DuckDB connectivity"
+	@echo "  make dbt-run          Build dbt models"
+	@echo "  make dbt-test         Run dbt data tests"
 	@echo ""
 	@echo "Planned (added in later phases):"
-	@echo "  make dbt-run"
-	@echo "  make dbt-test"
 	@echo "  make detect-anomalies"
 	@echo "  make dashboard"
 
@@ -27,3 +31,12 @@ generate-data:
 
 ingest:
 	.venv/bin/python -m ingestion.load_to_duckdb
+
+dbt-debug:
+	$(DBT) debug --project-dir dbt --profiles-dir dbt
+
+dbt-run:
+	$(DBT) run --project-dir dbt --profiles-dir dbt
+
+dbt-test:
+	$(DBT) test --project-dir dbt --profiles-dir dbt

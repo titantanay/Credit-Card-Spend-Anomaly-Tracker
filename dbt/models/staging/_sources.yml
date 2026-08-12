@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw CSV loads written by ingestion/load_to_duckdb.py
+    schema: main
+    tables:
+      - name: raw_transactions
+        description: Synthetic credit-card transactions
+        columns:
+          - name: transaction_id
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - not_null
+      - name: raw_customers
+        description: Synthetic cardholder attributes
+        columns:
+          - name: customer_id
+            tests:
+              - unique
+              - not_null

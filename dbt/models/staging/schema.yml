@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: stg_transactions
+    description: >
+      Cleaned transaction grain. Types cast, status/category normalized,
+      and calendar fields derived for KPI windows.
+    columns:
+      - name: transaction_id
+        description: Unique transaction identifier
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Cardholder key
+        tests:
+          - not_null
+      - name: transaction_timestamp
+        description: Transaction time (timestamp)
+        tests:
+          - not_null
+      - name: transaction_date
+        description: Calendar date of the transaction
+        tests:
+          - not_null
+      - name: transaction_week_start
+        description: Week start date (DuckDB date_trunc week)
+      - name: transaction_year
+        description: Calendar year
+      - name: transaction_month
+        description: Calendar month (1-12)
+      - name: merchant_category
+        description: Normalized merchant category
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Groceries
+                - Travel
+                - Dining
+                - Fuel
+                - Entertainment
+                - Utilities
+                - Healthcare
+                - Electronics
+                - Fashion
+      - name: transaction_amount
+        description: Transaction amount in USD
+        tests:
+          - not_null
+      - name: transaction_status
+        description: approved or declined
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["approved", "declined"]
+      - name: card_type
+        description: Product tier on the card used
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Classic", "Gold", "Platinum"]

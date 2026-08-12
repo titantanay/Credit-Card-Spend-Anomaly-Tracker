@@ -45,7 +45,7 @@ Details and trade-offs: see [DECISIONS.md](DECISIONS.md).
 | Layer | Role |
 |-------|------|
 | Raw | `raw_transactions`, `raw_customers` loaded from CSV |
-| Staging | Typed, normalized `stg_transactions` *(Phase 4)* |
+| Staging | Typed, normalized `stg_transactions` |
 | Marts | Customer spend, KPI, and decline-rate models *(Phase 5+)* |
 
 ## KPI Definitions
@@ -90,21 +90,27 @@ Pipeline commands:
 ```bash
 make generate-data   # synthetic customers + transactions → data/raw/
 make ingest          # load CSVs → DuckDB raw_transactions / raw_customers
-# make dbt-run / detect-anomalies / dashboard  (later phases)
+make dbt-run         # build staging (and later marts)
+make dbt-test        # dbt data tests
+# make detect-anomalies / dashboard  (later phases)
 ```
 
-Equivalent without Make:
+Equivalent without Make (from repo root):
 
 ```bash
 python -m data_generator.generate_transactions
 python -m ingestion.load_to_duckdb
+dbt run --project-dir dbt --profiles-dir dbt
+dbt test --project-dir dbt --profiles-dir dbt
 ```
+
+Set `DUCKDB_PATH` to the absolute warehouse path if you are not using Make (Make exports it automatically).
 
 ## Testing
 
 ```bash
 pytest
-# dbt test  (after dbt project is configured)
+make dbt-test
 ```
 
 ## Project Structure
@@ -129,4 +135,4 @@ See [DECISIONS.md](DECISIONS.md).
 
 ## Status
 
-Phase 3 — DuckDB raw ingestion. dbt models, anomaly detection, and dashboard land in subsequent phases.
+Phase 4 — dbt project and staging models. Marts, anomaly detection, and dashboard land in subsequent phases.
