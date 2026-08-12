@@ -16,8 +16,6 @@ from anomaly.detector import (
     detect_large_transactions,
     detect_spend_velocity,
     persist_anomalies,
-    provisional_severity,
-    run,
 )
 from kpi.thresholds import MonitoringThresholds
 
@@ -77,12 +75,6 @@ def _kpi_rows() -> pd.DataFrame:
     )
 
 
-def test_provisional_severity_bands():
-    assert provisional_severity(2.0, 2.0) == "LOW"
-    assert provisional_severity(3.0, 2.0) == "MEDIUM"
-    assert provisional_severity(4.0, 2.0) == "HIGH"
-
-
 def test_velocity_and_decline_detection_respects_activity_floor():
     thresholds = MonitoringThresholds(
         spend_velocity_min=2.0,
@@ -135,11 +127,18 @@ def test_large_transaction_detection():
     assert rows[0]["threshold_value"] == 1_500.0
 
 
-def test_build_anomaly_frame_assigns_ids_and_preserves_evidence():
+def test_build_anomaly_frame_assigns_ids_severity_and_evidence():
     records = detect_spend_velocity(
         _kpi_rows(),
         MonitoringThresholds(spend_velocity_min=2.0, min_txn_count_7d=3),
         "2026-01-01 00:00:00 UTC",
+    )
+    records.extend(
+        detect_category_shift(
+            _kpi_rows(),
+            MonitoringThresholds(category_shift_min=0.35, min_txn_count_7d=3),
+            "2026-01-01 00:00:00 UTC",
+        )
     )
     frame = build_anomaly_frame(records)
     assert list(frame.columns)[:8] == [
@@ -153,8 +152,12 @@ def test_build_anomaly_frame_assigns_ids_and_preserves_evidence():
         "explanation_context",
     ]
     assert frame.iloc[0]["anomaly_id"] == "A000001"
-    assert frame.iloc[0]["metric_value"] == 4.0
-    assert frame.iloc[0]["threshold_value"] == 2.0
+    assert frame["severity"].isin(["LOW", "MEDIUM", "HIGH"]).all()
+    c1 = frame[frame["customer_id"] == "C0001"]
+    assert len(c1) == 2
+    # velocity 4/2 → HIGH; shift 0.5/0.35 ≈ 1.43 → LOW then bumped to MEDIUM (2 signals)
+    assert set(c1["severity"]) == {"HIGH", "MEDIUM"}
+    assert (frame["metric_value"] >= frame["threshold_value"]).all()
 
 
 @pytest.mark.skipif(
@@ -171,6 +174,7 @@ def test_detect_anomalies_integration(tmp_path: Path):
         {"spend_velocity", "category_shift", "decline_rate", "large_transaction"}
     )
     assert anomalies["anomaly_id"].is_unique
+    assert anomalies["severity"].isin(["LOW", "MEDIUM", "HIGH"]).all()
     assert anomalies["metric_value"].notna().all()
     assert anomalies["threshold_value"].notna().all()
 

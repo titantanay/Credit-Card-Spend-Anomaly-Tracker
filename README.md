@@ -64,8 +64,10 @@ Monitoring thresholds (business rules, not ML scores): [docs/anomaly_thresholds.
 Rule-based detection in `anomaly/detector.py` over `mart_spend_kpis` /
 `mart_customer_spend`. Alert types: spend velocity, category shift, decline
 rate, large transaction. Each alert stores `metric_value`, `threshold_value`,
-and JSON `explanation_context` so evidence is preserved for review and later
-narration. Thresholds: [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md).
+and JSON `explanation_context`. Severity (LOW/MEDIUM/HIGH) combines breach
+magnitude with multi-signal coincidence — see
+[docs/severity.md](docs/severity.md). Thresholds:
+[docs/anomaly_thresholds.md](docs/anomaly_thresholds.md).
 
 ## AI Narration
 
@@ -132,7 +134,7 @@ data_generator/   Synthetic transaction generation
 ingestion/        CSV → DuckDB raw load
 dbt/              Staging and mart models
 kpi/              Mart access + monitoring thresholds
-anomaly/          Rule-based detection (severity scoring next)
+anomaly/          Rule-based detection and severity scoring
 ai_narration/     Ollama prompt + narration client (later)
 dashboard/        Streamlit risk monitoring UI (later)
 data/             Raw and processed files (not committed)
@@ -144,8 +146,8 @@ config.py         Shared paths and infrastructure settings
 
 ## Design Decisions
 
-See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/kpi_definitions.md). Thresholds: [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md).
+See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/kpi_definitions.md). Thresholds: [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md). Severity: [docs/severity.md](docs/severity.md).
 
 ## Status
 
-Phase 7 — rule-based anomaly detection. Severity framework, narration, and dashboard land next.
+Phase 8 — severity scoring. LLM narration and dashboard land next.

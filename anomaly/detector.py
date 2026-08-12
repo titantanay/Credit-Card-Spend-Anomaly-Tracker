@@ -1,8 +1,8 @@
 """Rule-based anomaly detection over dbt KPI marts.
 
 Deterministic analytics decide what is anomalous. Thresholds come from
-kpi.thresholds. Severity here is a simple magnitude band; Phase 8 refines
-multi-signal scoring in severity.py.
+kpi.thresholds. Severity is assigned in severity.py from breach magnitude
+and multi-signal coincidence.
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ import duckdb
 import pandas as pd
 
 import config
+from anomaly.severity import apply_severity
 from kpi.repository import connect, load_customer_spend, load_spend_kpis, require_marts
 from kpi.thresholds import DEFAULT_THRESHOLDS, MonitoringThresholds
 
@@ -38,18 +39,6 @@ ANOMALY_TYPES = (
     "decline_rate",
     "large_transaction",
 )
-
-
-def provisional_severity(metric_value: float, threshold_value: float) -> str:
-    """Magnitude band vs threshold. Replaced by richer rules in Phase 8."""
-    if threshold_value <= 0:
-        return "MEDIUM"
-    ratio = metric_value / threshold_value
-    if ratio >= 2.0:
-        return "HIGH"
-    if ratio >= 1.5:
-        return "MEDIUM"
-    return "LOW"
 
 
 def _context(**fields: object) -> str:
@@ -79,7 +68,6 @@ def detect_spend_velocity(
             {
                 "customer_id": row["customer_id"],
                 "anomaly_type": "spend_velocity",
-                "severity": provisional_severity(metric, threshold),
                 "detected_timestamp": detected_at,
                 "metric_value": metric,
                 "threshold_value": threshold,
@@ -113,7 +101,6 @@ def detect_category_shift(
             {
                 "customer_id": row["customer_id"],
                 "anomaly_type": "category_shift",
-                "severity": provisional_severity(metric, threshold),
                 "detected_timestamp": detected_at,
                 "metric_value": metric,
                 "threshold_value": threshold,
@@ -148,7 +135,6 @@ def detect_decline_rate(
             {
                 "customer_id": row["customer_id"],
                 "anomaly_type": "decline_rate",
-                "severity": provisional_severity(metric, threshold),
                 "detected_timestamp": detected_at,
                 "metric_value": metric,
                 "threshold_value": threshold,
@@ -182,7 +168,6 @@ def detect_large_transactions(
             {
                 "customer_id": row["customer_id"],
                 "anomaly_type": "large_transaction",
-                "severity": provisional_severity(metric, threshold),
                 "detected_timestamp": detected_at,
                 "metric_value": metric,
                 "threshold_value": threshold,
@@ -204,6 +189,7 @@ def build_anomaly_frame(records: list[dict]) -> pd.DataFrame:
         return pd.DataFrame(columns=ANOMALY_COLUMNS)
 
     frame = pd.DataFrame(records)
+    frame = apply_severity(frame)
     frame = frame.sort_values(
         ["customer_id", "anomaly_type", "metric_value"],
         ascending=[True, True, False],
