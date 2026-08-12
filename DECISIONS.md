@@ -44,6 +44,10 @@ Swap the DuckDB profile for BigQuery, Snowflake, or Redshift in dbt; keep stagin
 
 KPI **definitions** stay in SQL (`mart_spend_kpis`) so metrics have one calculation path. The Python `kpi/` package only reads those marts and holds monitoring thresholds. That keeps the dashboard and future detector from re-implementing spend math against raw CSV, and puts business-rule thresholds in one editable module.
 
+## 11. Why document portfolio claims explicitly?
+
+Portfolio projects get oversold easily (“fraud platform”, “real-time AI”, “production bank”). This repo keeps a hard line: synthetic batch monitoring, rules decide, LLM narrates, Docker is local reproducibility. Positioning docs under `docs/portfolio.md` and `docs/limitations.md` exist so demos and resume bullets stay aligned with what the code actually does.
+
 ---
 
-*Additional decisions will be appended as packaging and detection choices are finalized.*
+*Additional decisions will be appended if the system scope expands.*

@@ -214,10 +214,19 @@ Dockerfile        Dashboard image
 docker-compose.yml  Local dashboard service + volume mounts
 ```
 
+## Portfolio & Demo
+
+Stage 10 positioning materials (honest framing for interviews and resumes):
+
+- [Portfolio positioning](docs/portfolio.md) — pitch, story, talking points
+- [Resume / LinkedIn bullets](docs/resume_bullets.md)
+- [Demo script](docs/demo_script.md)
+- [Known limitations](docs/limitations.md)
+
 ## Design Decisions
 
 See [DECISIONS.md](DECISIONS.md). KPI formulas: [docs/kpi_definitions.md](docs/kpi_definitions.md). Thresholds: [docs/anomaly_thresholds.md](docs/anomaly_thresholds.md). Severity: [docs/severity.md](docs/severity.md). Narration: [docs/ai_narration.md](docs/ai_narration.md).
 
 ## Status
 
-Analytics pipeline through AI narration is implemented. Streamlit dashboard and local Docker packaging are implemented. Ollama remains optional.
+Stages 1–10 complete for this prototype: analytics pipeline, anomaly detection with severity, optional Ollama narration, Streamlit dashboard, local Docker packaging, and portfolio/demo documentation. Ollama remains optional.
