@@ -1,0 +1,21 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spend-anomaly-dashboard:local
+    container_name: spend-anomaly-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      DUCKDB_PATH: /app/database/spend_monitor.duckdb
+      # Ollama stays on the host (optional). Fallback narration is used if unreachable.
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: gemma2:2b
+    volumes:
+      # Mount generated warehouse + processed alerts (not baked into the image).
+      - ./database:/app/database:ro
+      - ./data:/app/data:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
