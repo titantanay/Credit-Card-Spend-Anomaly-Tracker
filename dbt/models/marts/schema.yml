@@ -1,0 +1,121 @@
+version: 2
+
+models:
+  - name: mart_customer_spend
+    description: >
+      Customer-level spend behavior over the full synthetic observation window.
+      Spend totals use approved transactions only.
+    columns:
+      - name: customer_id
+        description: Cardholder key
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        tests:
+          - not_null
+      - name: card_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Classic", "Gold", "Platinum"]
+      - name: credit_limit
+        tests:
+          - not_null
+      - name: transaction_count
+        tests:
+          - not_null
+      - name: total_approved_spend
+        tests:
+          - not_null
+      - name: decline_rate
+        description: declined / total transactions in-window
+        tests:
+          - not_null
+      - name: top_category
+        description: Merchant category with the highest approved spend
+      - name: top_category_share
+        description: Share of approved spend in the top category
+
+  - name: mart_spend_kpis
+    description: >
+      Primary monitoring KPIs at customer grain as of the latest staged
+      transaction date. See docs/kpi_definitions.md.
+    columns:
+      - name: as_of_date
+        tests:
+          - not_null
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: card_type
+        tests:
+          - not_null
+      - name: spend_7d
+        description: Approved spend in the last 7 days (inclusive)
+        tests:
+          - not_null
+      - name: spend_30d
+        description: Approved spend in the last 30 days (inclusive)
+        tests:
+          - not_null
+      - name: spend_velocity
+        description: >
+          spend_7d / (spend_30d * 7/30). Null when spend_30d is zero.
+      - name: category_shift_score
+        description: >
+          Max absolute category-share change between the recent 7-day window
+          and the prior 30-day baseline window.
+        tests:
+          - not_null
+      - name: category_shift_driver
+        description: Category with the largest absolute share change
+      - name: decline_rate_7d
+        description: Declined / total transactions in the last 7 days
+      - name: decline_rate_30d
+        description: Declined / total transactions in the last 30 days
+
+  - name: mart_decline_rates
+    description: >
+      Weekly decline-rate facts by customer, card type, and merchant category.
+    columns:
+      - name: period_start
+        tests:
+          - not_null
+      - name: period_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["week"]
+      - name: customer_id
+        tests:
+          - not_null
+      - name: card_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Classic", "Gold", "Platinum"]
+      - name: merchant_category
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Groceries
+                - Travel
+                - Dining
+                - Fuel
+                - Entertainment
+                - Utilities
+                - Healthcare
+                - Electronics
+                - Fashion
+      - name: transaction_count
+        tests:
+          - not_null
+      - name: declined_count
+        tests:
+          - not_null
+      - name: decline_rate
+        tests:
+          - not_null

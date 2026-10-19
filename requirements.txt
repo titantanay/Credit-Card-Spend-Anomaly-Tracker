@@ -1,0 +1,20 @@
+# Core runtime
+duckdb>=1.1.0,<2.0.0
+pandas>=2.2.0,<3.0.0
+numpy>=1.26.0,<3.0.0
+pyyaml>=6.0.0,<7.0.0
+python-dotenv>=1.0.0,<2.0.0
+
+# Transformation
+dbt-core>=1.8.0,<1.10.0
+dbt-duckdb>=1.8.0,<1.10.0
+
+# Dashboard
+streamlit>=1.36.0,<2.0.0
+plotly>=5.22.0,<6.0.0
+
+# Local LLM client (Ollama HTTP API)
+requests>=2.32.0,<3.0.0
+
+# Testing
+pytest>=8.2.0,<9.0.0

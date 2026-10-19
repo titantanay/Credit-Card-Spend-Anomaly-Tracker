@@ -1,0 +1,36 @@
+.git
+.venv
+venv
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.env
+.env.*
+!.env.example
+
+# Generated analytics artifacts (mounted at runtime)
+database/*.duckdb
+database/*.duckdb.wal
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# dbt build artifacts
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+dbt/.user.yml
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.md
+!README.md
+docs/
+tests/
+Makefile
